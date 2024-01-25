@@ -1,0 +1,42 @@
+Task:
+Create an app that will send a request to the API https://www.boredapi.com/api/activity
+It needs to check the response that the API will send and write it a database.
+Automation test to be preformed 
+The solution to be place in container
+
+Implementation requires:
+Create Mysql 5 Database from the AWS RDS service.
+Also install Mysql 5 client on AWS Linux:
+sudo yum update -y 
+sudo rpm -Uvh https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm 
+rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
+sudo yum install mysql-community-server 
+sudo systemctl enable mysqld 
+sudo systemctl start mysqld 
+
+CREATE DATABASE INFO;
+USE INFO;
+CREATE TABLE Activity (
+    Description varchar(300)
+);
+SHOW TABLES;
+
+Run the script:
+chmod 777 check.py
+python3 check.py
+
+Moving the script to container and running it:
+Create new directory and move the script in it.
+In the same directory start building the docker image. 
+vim Dockerfile
+FROM python:3.8
+WORKDIR /app
+COPY . /app
+RUN pip install requests
+RUN pip install mysql-connector-python
+CMD ["python3", "./check.py"]
+
+sudo docker build -t myapp .
+sudo docker run myapp
+
+Login to the database to validate that after running the container the database was updated with new entry. 
